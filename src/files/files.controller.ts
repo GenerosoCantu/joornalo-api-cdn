@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Patch, Body, Param, Req, RawBodyRequest } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { ValidationPipe, ParseUUIDPipe, UploadedFile, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
@@ -51,9 +51,29 @@ export class FilesController {
     return response;
   }
 
-  @Delete(':id')
-  delete(@Param('id') id): Promise<any> {
+  @Delete()
+  delete(@Req() req: RawBodyRequest<Request>) {
+    return this.filesService.deleteFile(req.body);
+  }
+
+  @Delete('tmp/:id')
+  deleteTmp(@Param('id') id): Promise<any> {
     return this.filesService.deleteFile('data/tmp/' + id);
   }
+
+  @Patch('moveimages')
+  moveImages(@Req() req: RawBodyRequest<Request>): Promise<any> {
+    return this.filesService.moveImages(req.body);
+  }
+
+  @Patch('json')
+  writejson(@Req() req: RawBodyRequest<Request>) {
+    return this.filesService.saveJson(req.body);
+  }
+
+  // @Patch('writejson')
+  // writejson(@Body() payload: any): Promise<any> {
+  //   return this.filesService.writejson(payload);
+  // }
 
 }

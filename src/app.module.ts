@@ -17,14 +17,14 @@ import config from './config/keys'
 @Module({
   imports: [
     MongooseModule.forRoot(config.mongoURI),
-    AuthModule,
-    CoversModule,
+    // AuthModule,
+    // CoversModule,
     FilesModule,
-    FrontsModule,
-    ModulesModule,
-    SectionsModule,
-    StoriesModule,
-    UsersModule
+    // FrontsModule,
+    // ModulesModule,
+    // SectionsModule,
+    // StoriesModule,
+    // UsersModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -3,7 +3,7 @@ import { HttpService } from '@nestjs/axios'
 // import * as config from 'config';
 import * as fs from 'fs';
 // import * as path from 'path';
-
+import { moveFile, deleteFile } from '../utils/file-json.utils';
 
 @Injectable()
 export class FilesService {
@@ -23,34 +23,46 @@ export class FilesService {
   //   });
   // }
 
-  async deleteFile(fileName) {
-    fs.unlink(fileName, (err) => {
+  async deleteFile(body) {
+    fs.unlink(body.fileName, (err) => {
       if (err) {
         console.log(err);
       }
-      console.log("Delete File successfully...", fileName);
-      return {};
+      console.log("Delete File successfully...", body.fileName);
+      return;
     });
   }
 
-  // async moveFile(oldPath, newPath) {
-  //   fs.rename(oldPath, newPath, (err) => {
-  //     if (err) {
-  //       console.log(err);
-  //     }
-  //     console.log("File successfully moved...", newPath);
-  //     return {};
-  //   });
-  // }
+  async moveImages(body) {
+    // path, oldStory['images'], story['images']
+    const { path, oldImages, newImages } = body;
 
-  // async moveTmpImages(id, images) {
-  //   console.log('id:', id)
-  //   console.log('images:', images)
-  //   // const folders = id.split('');
-  //   // const path = '' + folders[0] + '/' + folders[1] + '/'
-  //   // console.log('path:', path)
-  //   // console.log('images:', images)
+    const oldFilename = oldImages.map((img) => img.filename)
+    const newFilename = newImages.map((img) => img.filename)
+    const removedImages = oldFilename.filter((filename) => !newFilename.includes(filename));
+    const moveImages = newFilename.filter((filename) => !oldFilename.includes(filename));
 
-  // }
+    // Move tmp images that are in newImages but not in oldImages
+    await moveImages.forEach(filename => moveFile(`data/tmp/${filename}`, `${path}${filename}`));
+    // Delete images that are in oldImages but not in newImages
+    await removedImages.forEach(filename => deleteFile(`${path}${filename}`));
+
+    return;
+  }
+
+  async saveJson(body) {
+    const { path, fileName, obj } = body;
+    console.log('body::::', body)
+    console.log('path::::', path);
+    console.log('fileName::::', fileName);
+    console.log('obj::::', obj);
+
+    await fs.writeFile(path + fileName + '.json', JSON.stringify(obj), { flag: 'w' }, function (err) {
+      if (err) console.log(err);
+    });
+
+    return;
+  }
+
 
 }

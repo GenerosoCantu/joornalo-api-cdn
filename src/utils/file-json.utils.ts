@@ -90,7 +90,7 @@ export const writeJsonFile = async (path, fileName, obj) => {
   });
 }
 
-const moveFile = async (oldPath, newPath) => {
+export const moveFile = async (oldPath, newPath) => {
   await fs.rename(oldPath, newPath, (err) => {
     if (err) {
       console.log(err);
