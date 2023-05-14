@@ -58,7 +58,7 @@ export class FilesController {
 
   @Delete('tmp/:id')
   deleteTmp(@Param('id') id): Promise<any> {
-    return this.filesService.deleteFile('data/tmp/' + id);
+    return this.filesService.deleteFile({ fileName: 'data/tmp/' + id });
   }
 
   @Patch('moveimages')
