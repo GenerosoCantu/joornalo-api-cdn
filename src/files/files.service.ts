@@ -1,5 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, HttpException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios'
+import { catchError, firstValueFrom } from 'rxjs';
 // import * as config from 'config';
 import * as fs from 'fs';
 // import * as path from 'path';
@@ -7,7 +8,9 @@ import { moveFile, deleteFile } from '../utils/file-json.utils';
 
 @Injectable()
 export class FilesService {
-  constructor() { }
+  constructor(
+    private readonly httpService: HttpService
+  ) { }
 
   // async uploadFile(file) {
   //   console.log('filename: ', file[0]);
@@ -52,10 +55,10 @@ export class FilesService {
 
   async saveJson(body) {
     const { path, fileName, obj } = body;
-    console.log('body::::', body)
-    console.log('path::::', path);
-    console.log('fileName::::', fileName);
-    console.log('obj::::', obj);
+    // console.log('body::::', body)
+    // console.log('path::::', path);
+    // console.log('fileName::::', fileName);
+    // console.log('obj::::', obj);
 
     await fs.writeFile(path + fileName + '.json', JSON.stringify(obj), { flag: 'w' }, function (err) {
       if (err) console.log(err);
@@ -64,5 +67,22 @@ export class FilesService {
     return;
   }
 
+  async validateToken(token) {
+    const axiosConfig = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      }
+    }
+    const { status } = await firstValueFrom(
+      this.httpService.get('http://localhost:4000/auth/validate', axiosConfig).pipe(
+        catchError((error) => {
+          console.log('Token not valid!');
+          throw new HttpException(error.response.data, error.response.status);
+        }),
+      )
+    );
+    return true;
+  }
 
 }
