@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException, HttpException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios'
 import { catchError, firstValueFrom } from 'rxjs';
-// import * as config from 'config';
+import config from '../config/keys'
 import * as fs from 'fs';
-// import * as path from 'path';
 import { moveFile, deleteFile } from '../utils/file-json.utils';
 
 @Injectable()
@@ -11,20 +10,6 @@ export class FilesService {
   constructor(
     private readonly httpService: HttpService
   ) { }
-
-  // async uploadFile(file) {
-  //   console.log('filename: ', file[0]);
-  //   console.log('filename: ', file[0].filename);
-  //   fs.rename('data/tmp/' + file[0].filename, 'data/b/' + file[0].originalname, (err) => {
-  //     if (err) console.log(err);
-  //     fs.unlink('data/tmp/' + file[0].filename, (err) => {
-  //       // if (err) console.log(err);
-  //       console.log('originalname: ', file[0].originalname);
-  //       console.log('Download complete!');
-  //       return { file: file[0].originalname };
-  //     });
-  //   });
-  // }
 
   async deleteFile(body) {
     fs.unlink(body.fileName, (err) => {
@@ -75,7 +60,7 @@ export class FilesService {
       }
     }
     const { status } = await firstValueFrom(
-      this.httpService.get('http://localhost:4000/auth/validate', axiosConfig).pipe(
+      this.httpService.get(`${config.JOORNALO_API_URL}auth/validate`, axiosConfig).pipe(
         catchError((error) => {
           console.log('Token not valid!');
           throw new HttpException(error.response.data, error.response.status);
