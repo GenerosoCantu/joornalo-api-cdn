@@ -39,7 +39,7 @@ export class FilesController {
       const response = {
         originalname: file.originalname,
         filename: file.filename,
-        src: `http://localhost:5000/tmp/${file.filename}`
+        src: `tmp/${file.filename}`
       };
       return response;
     }
