@@ -22,7 +22,7 @@ async function bootstrap() {
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, options);
     swagger_1.SwaggerModule.setup('api', app, document);
-    await app.listen(4100);
+    await app.listen(process.env.PORT || 4100);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

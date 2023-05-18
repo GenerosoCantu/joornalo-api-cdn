@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException, HttpException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios'
 import { catchError, firstValueFrom } from 'rxjs';
-import config from '../config/keys'
 import * as fs from 'fs';
 import { moveFile, deleteFile } from '../utils/file-json.utils';
 
@@ -60,7 +59,7 @@ export class FilesService {
       }
     }
     const { status } = await firstValueFrom(
-      this.httpService.get(`${config.JOORNALO_API_URL}auth/validate`, axiosConfig).pipe(
+      this.httpService.get(`${process.env.JOORNALO_API_URL}auth/validate`, axiosConfig).pipe(
         catchError((error) => {
           console.log('Token not valid!');
           throw new HttpException(error.response.data, error.response.status);

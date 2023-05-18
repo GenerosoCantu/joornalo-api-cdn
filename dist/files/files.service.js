@@ -13,7 +13,6 @@ exports.FilesService = void 0;
 const common_1 = require("@nestjs/common");
 const axios_1 = require("@nestjs/axios");
 const rxjs_1 = require("rxjs");
-const keys_1 = require("../config/keys");
 const fs = require("fs");
 const file_json_utils_1 = require("../utils/file-json.utils");
 let FilesService = class FilesService {
@@ -54,7 +53,7 @@ let FilesService = class FilesService {
                 Authorization: `Bearer ${token}`,
             }
         };
-        const { status } = await (0, rxjs_1.firstValueFrom)(this.httpService.get(`${keys_1.default.JOORNALO_API_URL}auth/validate`, axiosConfig).pipe((0, rxjs_1.catchError)((error) => {
+        const { status } = await (0, rxjs_1.firstValueFrom)(this.httpService.get(`${process.env.JOORNALO_API_URL}auth/validate`, axiosConfig).pipe((0, rxjs_1.catchError)((error) => {
             console.log('Token not valid!');
             throw new common_1.HttpException(error.response.data, error.response.status);
         })));
